@@ -2,6 +2,8 @@ package com.camera.library;
 
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.SeekBar;
@@ -32,6 +35,7 @@ public class CameraLibrary extends Activity {
 	private CameraOptions camOptions;
 	private String Flashmode = "auto";
 	private int Flashmodevalue = 0;
+	private int zoomMode = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +44,7 @@ public class CameraLibrary extends Activity {
         if (camOptions.getActionClick()== 0 || camOptions.getActionClick() >3)
         	throw new RuntimeException("Camera Options is not defined");
         CreateMyView();
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 	
     private void CreateMyView(){
@@ -53,6 +57,7 @@ public class CameraLibrary extends Activity {
           		LinearLayout.LayoutParams.WRAP_CONTENT,
           		LinearLayout.LayoutParams.WRAP_CONTENT);
           
+       
           LayoutParams WRAP_CONTENT_WRAP_CONTENT_020 = new LinearLayout.LayoutParams(
           		LinearLayout.LayoutParams.WRAP_CONTENT,
           		LinearLayout.LayoutParams.WRAP_CONTENT,0.20f);
@@ -62,7 +67,7 @@ public class CameraLibrary extends Activity {
          								LinearLayout.LayoutParams.FILL_PARENT,
          								LinearLayout.LayoutParams.FILL_PARENT);
          linearMain.setLayoutParams(paramsMain);
-         linearMain.setOrientation(LinearLayout.VERTICAL);
+         linearMain.setOrientation(LinearLayout.HORIZONTAL);
          //linearMain.setBackgroundResource(R.drawable.back);
          linearMain.setBackgroundColor(Color.GRAY);
          
@@ -83,64 +88,18 @@ public class CameraLibrary extends Activity {
          linear1.addView(frame);
          
          final LinearLayout linear2 = new LinearLayout(this);
-         linear2.setLayoutParams(MATCH_PARENT_WRAP_CONTENT);
-         linear2.setOrientation(LinearLayout.HORIZONTAL);
+         linear2.setLayoutParams(WRAP_CONTENT_WRAP_CONTENT);
+         linear2.setOrientation(LinearLayout.VERTICAL);
          linear2.setVisibility(View.GONE);
          
          final LinearLayout linear3 = new LinearLayout(this);
-         linear3.setLayoutParams(MATCH_PARENT_WRAP_CONTENT);
-         linear3.setOrientation(LinearLayout.HORIZONTAL);
+         linear3.setLayoutParams(WRAP_CONTENT_WRAP_CONTENT);
+         linear3.setOrientation(LinearLayout.VERTICAL);
          
-         final HorizontalScrollView horizontalView = new HorizontalScrollView(this);
+         final ScrollView horizontalView = new ScrollView(this);
          horizontalView.setLayoutParams(WRAP_CONTENT_WRAP_CONTENT);
          horizontalView.setVisibility(View.GONE);
-         
-         ImageView imgBack = new ImageView(this);
-         imgBack.setLayoutParams(WRAP_CONTENT_WRAP_CONTENT);
-         imgBack.setImageResource(R.drawable.back_icon);
-         imgBack.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.i(LOG_TAG, "btnBack Clicked");
-				Animation a1 = new TranslateAnimation( Animation.RELATIVE_TO_SELF,1500,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
-				a1.setDuration(1000);
-				Animation a2 = new TranslateAnimation(1500, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
-				a2.setDuration(1000);
-				linear2.startAnimation(a1);
-				linear2.setVisibility(View.GONE);
-				linear3.startAnimation(a2);
-				linear3.setVisibility(View.VISIBLE);
-			}
-		});
-         
-         final SeekBar seekZoom = new SeekBar(this);
-         seekZoom.setLayoutParams(MATCH_PARENT_WRAP_CONTENT);
-         seekZoom.setPadding(25, 0, 0, 0);
-         seekZoom.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {}
-			
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
-				try {
-					seekBar.setMax(cam_params.getMaxZoom());
-					if (cam_params.isZoomSupported()) 
-						cam_params.setZoom(progress);
-					mPreview.mCamera.setParameters(cam_params);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					Log.e(LOG_TAG, "seekZoom " + ex.getMessage());
-					Toast.makeText(getApplicationContext(), "Unable To Zoom", 25).show();
-				}
-			}
-		});
-         linear2.addView(imgBack);
-         linear2.addView(seekZoom);
+
   
          ImageView imgCapture = new ImageView(this);
          imgCapture.setLayoutParams(WRAP_CONTENT_WRAP_CONTENT_020);
@@ -263,18 +222,29 @@ public class CameraLibrary extends Activity {
 				cam_params = mPreview.mCamera.getParameters();
 				Log.i(LOG_TAG, "btnZoom Clicked");
 				if (cam_params.isZoomSupported()){
-	    			seekZoom.setMax(cam_params.getMaxZoom());
-	    			Animation anim1 = new TranslateAnimation(1500, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
-	    			anim1.setDuration(1000);
-	    			Animation anim2 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,1500,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
-	    			anim2.setDuration(1000);
-	    			linear2.startAnimation(anim1);
-	    			linear2.setVisibility(View.VISIBLE);
-	    			linear3.startAnimation(anim2);
-	    			linear3.setVisibility(View.GONE);
+					zoomMode ++;
+					if(zoomMode >cam_params.getMaxZoom())
+						zoomMode =0;
+					cam_params.setZoom(zoomMode);
+					mPreview.mCamera.setParameters(cam_params);
+					Toast.makeText(getApplicationContext(), zoomMode +"x", 25).show();
+				
 	    		}else{
 	    			Toast.makeText(getApplicationContext(), "Zoom Not Supported", 25).show();
 	    			imgZoom.setImageResource(R.drawable.zoom_block);	    		}
+			}
+		});
+         
+         ImageView imgExit = new ImageView(this);
+         imgExit.setLayoutParams(WRAP_CONTENT_WRAP_CONTENT_020);
+         imgExit.setImageResource(R.drawable.exit);
+         imgExit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent();
+				CameraLibrary.this.setResult(Activity.RESULT_CANCELED, i);
+				CameraLibrary.this.finish();
 			}
 		});
          
@@ -282,32 +252,39 @@ public class CameraLibrary extends Activity {
          linear3.addView(imgEffects);
          linear3.addView(imgFlash);
          linear3.addView(imgZoom);
+         linear3.addView(imgExit);
          
          //Main Button Animation
-         Animation translate = new TranslateAnimation(500, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+         Animation translate = new TranslateAnimation( Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF,500, Animation.RELATIVE_TO_SELF);
          translate.setDuration(1200);
          translate.setInterpolator(new AccelerateDecelerateInterpolator());
          imgCapture.startAnimation(translate);
          
-         Animation translate2 = new TranslateAnimation(1500, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+         Animation translate2 = new TranslateAnimation( Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF,1500, Animation.RELATIVE_TO_SELF);
          translate2.setDuration(1300);
          translate2.setInterpolator(new AccelerateDecelerateInterpolator());
          imgEffects.startAnimation(translate2);
          
+         Animation translate3 = new TranslateAnimation( Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF,2500, Animation.RELATIVE_TO_SELF);
+         translate3.setDuration(1400);
+         translate3.setInterpolator(new AccelerateDecelerateInterpolator());
+         imgFlash.startAnimation(translate3);
          
-         Animation translate4 = new TranslateAnimation(3500, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+         Animation translate4 = new TranslateAnimation( Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, 3500, Animation.RELATIVE_TO_SELF);
          translate4.setDuration(1500);
          translate4.setInterpolator(new AccelerateDecelerateInterpolator());
-         imgFlash.startAnimation(translate4);
+         imgZoom.startAnimation(translate4);
          
-         Animation translate5 = new TranslateAnimation(4500, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+         Animation translate5 = new TranslateAnimation( Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, 4500, Animation.RELATIVE_TO_SELF);
          translate5.setDuration(1600);
          translate5.setInterpolator(new AccelerateDecelerateInterpolator());
-         imgZoom.startAnimation(translate5);
+         imgExit.startAnimation(translate5);
+         
+        
          
          LinearLayout linear4 = new LinearLayout(this);
          linear4.setLayoutParams(MATCH_PARENT_WRAP_CONTENT);
-         linear4.setOrientation(LinearLayout.HORIZONTAL);
+         linear4.setOrientation(LinearLayout.VERTICAL);
          horizontalView.addView(linear4);
          
          ImageView img_Effects_back = new ImageView(this);
@@ -448,5 +425,11 @@ public class CameraLibrary extends Activity {
          setContentView(linearMain,paramsMain);
     }
 
-   
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		Intent i = new Intent();
+		CameraLibrary.this.setResult(Activity.RESULT_CANCELED, i);
+		CameraLibrary.this.finish();
+	}
 }

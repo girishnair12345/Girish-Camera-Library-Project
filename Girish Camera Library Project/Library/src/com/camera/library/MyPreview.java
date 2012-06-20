@@ -37,6 +37,7 @@ public class MyPreview extends SurfaceView implements SurfaceHolder.Callback{
 		
 		try{
 			mCamera.setPreviewDisplay(mHolder);
+			
 			mCamera.setPreviewCallback(new PreviewCallback() {
 				
 				@Override
