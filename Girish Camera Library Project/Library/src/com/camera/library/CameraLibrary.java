@@ -40,6 +40,7 @@ public class CameraLibrary extends Activity {
         if (camOptions.getActionClick()== 0 || camOptions.getActionClick() >3)
         	throw new RuntimeException("Camera Options is not defined");
         CreateMyView();
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 	
     private void CreateMyView(){
