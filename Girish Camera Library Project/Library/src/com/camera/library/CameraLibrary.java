@@ -39,6 +39,8 @@ public class CameraLibrary extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         mPreview = new MyPreview(getApplicationContext());
         camOptions = CameraOptions.getInstance(this);
         if (camOptions.getActionClick()== 0 || camOptions.getActionClick() >3)
