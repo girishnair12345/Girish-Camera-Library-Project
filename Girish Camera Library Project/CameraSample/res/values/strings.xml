@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">This is a simple camera Activity</string>
-    <string name="app_name">CameraSample</string>
+    <string name="app_name">Camera Sample</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
 
 </resources>

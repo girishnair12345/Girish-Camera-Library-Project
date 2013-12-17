@@ -1,21 +1,30 @@
-This project is intended to those people who need to take picture from the camera and use it
-
-1. Create a new project in android , right click on it and Choose Android and now clikc add at the bottom to add the "Library" project to your project
-2.Place these permission in your Manifest file
+Add these to your manifest
+<uses-sdk
+    android:minSdkVersion="10"
+    android:targetSdkVersion="10" />
 <uses-features android:name="android.hardware.camera"/>
 <uses-permission android:name="android.permission.CAMERA"/>	
-
-and also this activity under the application tag
-<activity android:name="com.camera.library.CameraLibrary"></activity>
-
-3.Now get the instance of the class
- CameraOptions options = CameraOptions.getInstance(this);
- options.takePicture();
- 
-4. on the click event of button or in any activity call use to start the camera
-	Intent intent = new Intent(this,CameraLibrary.class);
-	startActivityForResult(intent, REQUEST_CODE);
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	
-5. Call the options.getBitmapFile() method to get the bitmap iamge when user takes the picture or use the options.getFilePath() method to get the file path 
+<activity android:name="com.girish.cameraLibrary.CameraClass"></activity>
 
-The images created are stored in the cache directory of the application
+Now in your activity implement the com.girish.cameraLibrary.OnPictureTaken interface and Override the pictureTaken(Bitmap bitmap, File file) method which provides your with the bitmap and File 
+
+Create and instance of the CustomCamera
+private CustomCamera mCustomCamera;
+
+mCustomCamera = new CustomCamera(MainActivity.this);
+mCustomCamera.setPictureTakenListner(this);
+
+//To start the custom back camera use this
+mCustomCamera.startCamera();
+//To start the default camera of your device use this
+mCustomCamera.startCameraInbuit();
+//To start the front camera use this
+mCustomCamera.startCameraFront();
+
+
+You can mail me at gnairgithub@gmail.com if you wish to want some improvement or need some functionality that needs to be added on
+Thank you
+:)
