@@ -19,8 +19,8 @@ mCustomCamera.setPictureTakenListner(this);
 
 //To start the custom back camera use this
 mCustomCamera.startCamera();
-//To start the default camera of your device use this
-mCustomCamera.startCameraInbuit();
+//To send an intent to applications who are listening to Camera request
+mCustomCamera.sendCameraIntent();
 //To start the front camera use this
 mCustomCamera.startCameraFront();
 

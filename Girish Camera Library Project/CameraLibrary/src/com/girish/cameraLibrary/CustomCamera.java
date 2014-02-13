@@ -21,7 +21,7 @@ public class CustomCamera {
 		mActivity.startActivity(new Intent(mActivity,CameraClass.class));
 	}
 	
-	public void startCameraInbuit(){
+	public void sendCameraIntent(){
 		CameraClass.useDefaultCamera = true;
 		CamPreview.front_camera = false;
 		mActivity.startActivity(new Intent(mActivity,CameraClass.class));

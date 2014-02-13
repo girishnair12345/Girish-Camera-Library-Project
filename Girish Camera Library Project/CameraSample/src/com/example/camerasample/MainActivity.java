@@ -53,7 +53,7 @@ public class MainActivity extends Activity implements OnClickListener, OnPicture
 			break;
 
 		case R.id.btnDefaultCamera:
-			mCustomCamera.startCameraInbuit();
+			mCustomCamera.sendCameraIntent();
 			break;
 			
 		case R.id.btnFrontCamera:
