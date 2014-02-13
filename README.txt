@@ -24,7 +24,11 @@ mCustomCamera.startCameraInbuit();
 //To start the front camera use this
 mCustomCamera.startCameraFront();
 
+Then now you can access the image using pictureTaken(Bitmap bitmap, File file) method, so just use
+
+imageview.setImageBitmap(bitmap);
 
 You can mail me at gnairgithub@gmail.com if you wish to want some improvement or need some functionality that needs to be added on
 Thank you
 :)
+
